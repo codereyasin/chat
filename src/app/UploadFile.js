@@ -1,41 +1,33 @@
 import React, { useState } from 'react'
-import { storage } from "../utils/firebase"
+import useStorage from "../hooks/useStorage";
 
 function UploadFiles() {
     const [image, setImage] = useState(null)
-    const [url , setUrl] = useState(null)
-    console.log(image);
+    const [upload, progress, url, error, getPreview] = useStorage('image/')
+
     const handleChange = (e) => {
+        
         setImage(e.target.files[0])
+
     }
     const uploadFils = () =>{
-        if(!image) return alert('choose an image')
-        const storageRef = storage.ref(`profile/${image.name}`)
-        const uploadTask = storageRef.put(image)
-        uploadTask.on(
-            "state_change",
-            (snapshot) =>{
-            const progress = Math.round(
-               ( snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            )
-            console.log(progress);
-            },
-            (error) => {
-                console.log(error);
-                alert(error.message)
-            },
-            async() => {
-                const url = await storageRef.getDownloadURL()
-                setUrl(url);
-            }
-        )
+        upload(image)
     }
-
   return (
     <div>
-      <input type="file" accept='image/*' onChange={handleChange}/>
+      {image && <img src={getPreview(image)} alt=""/> }
+      <input 
+       type="file" 
+       accept='image/*'
+       onChange={handleChange}
+    />
+    <br />
+    {progress}
+    {error && "ERROR" + error}
+    <br />
     <button onClick={uploadFils}>Upload</button>
     {url && <img src={url} alt="" />}
+    
     </div>
   )
 }
