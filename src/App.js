@@ -3,6 +3,7 @@ import { useState,useEffect } from 'react'
 import Login from './app/components/Login';
 import {auth} from './utils/firebase'
 import UploadFiles from './app/UploadFile';
+import Chat from './app/components/Chat';
 function App() {
   const [user, setUsers] = useState(null)
   
@@ -33,7 +34,7 @@ function App() {
       </button>
      )}
      </div>
-    {user ? <UploadFiles user={user} /> :  <Login/>}
+    {user ? <Chat user={user} /> :  <Login/>}
     </div>
 
   );
